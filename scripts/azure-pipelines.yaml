@@ -1,0 +1,12 @@
+trigger:
+    - main
+
+pool: default
+      
+steps:
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: 'scripts'
+    ArtifactName: 'Release_Script'
+    publishLocation: 'Container'

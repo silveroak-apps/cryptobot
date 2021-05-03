@@ -1,0 +1,118 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: postgres:13.2-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: "!Crypto100"
+      POSTGRES_DB: cryptodb
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - type: volume
+        source: db-data
+        target: /var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # adminer:
+  #   image: adminer
+  #   restart: unless-stopped
+  #   ports:
+  #     - 8080:8080
+
+  logging:
+    image: datalust/seq:2021.2
+    restart: unless-stopped
+    environment:
+      # SEQ_FIRSTRUN_ADMINPASSWORDHASH: "$PH"
+      ACCEPT_EULA: Y
+    volumes:
+      - type: volume
+        source: app-logs
+        target: /data
+    ports:
+      - 5341:80
+    # healthcheck: # no curl in image
+    #   test: ["CMD", "curl", "-f", "http://localhost:5341"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 5
+
+  dbupdate:
+    image: cryptobotregistrybsn.azurecr.io/binance-trader:latest
+    environment:
+      DbAdminConnection: "Host=db;Port=5432;Username=postgres;Password=!Crypto100;Database=cryptodb;Pooling=true;Timeout=30;"
+      Serilog__WriteTo__1__Args__ServerUrl: "http://logging:5341"
+      STARTUP_DLL: Crypto.Database.Upgrade.dll
+      Serilog__MinimumLevel: Debug
+    working_dir: /app/Crypto.Database.Upgrade
+    depends_on: 
+      db:
+        condition: service_healthy
+      # logging: 
+      #   condition: true
+      
+
+  trader:
+    image: cryptobotregistrybsn.azurecr.io/binance-trader:latest
+    restart: unless-stopped
+    environment:
+      ConnectionStrings__PostgresConnection: "Host=db;Port=5432;Username=postgres;Password=!Crypto100;Database=cryptodb;Pooling=true;Timeout=30;"
+      Binance__FuturesKey: $Binance__FuturesKey
+      Binance__FuturesSecret: $Binance__FuturesSecret
+      Binance__FuturesUsdtBaseUrl: $Binance__FuturesUsdtBaseUrl
+      Binance__FuturesCoinMBaseUrl: $Binance__FuturesCoinMBaseUrl
+      Binance__FuturesWSSUrl: $Binance__FuturesWSSUrl
+      Serilog__WriteTo__1__Args__ServerUrl: "http://logging:5341"
+      STARTUP_DLL: Crypto.Trader.dll
+      cli_args: $trader_cli_args
+    working_dir: /app/Crypto.Trader
+    ports:
+      - 5000:5000
+
+  sellAnalyser:
+    image: cryptobotregistrybsn.azurecr.io/binance-trader:latest
+    restart: unless-stopped
+    environment:
+      ConnectionStrings__PostgresConnection: "Host=db;Port=5432;Username=postgres;Password=!Crypto100;Database=cryptodb;Pooling=true;Timeout=30;"
+      Binance__FuturesKey: $Binance__FuturesKey
+      Binance__FuturesSecret: $Binance__FuturesSecret
+      Binance__FuturesUsdtBaseUrl: $Binance__FuturesUsdtBaseUrl
+      Binance__FuturesCoinMBaseUrl: $Binance__FuturesCoinMBaseUrl
+      Binance__FuturesWSSUrl: $Binance__FuturesWSSUrl
+      Serilog__WriteTo__1__Args__ServerUrl: "http://logging:5341"
+      TradeApiUrl: "http://trader:5000"
+      STARTUP_DLL: Crypto.SellAnalyser.dll
+      cli_args: $analyser_cli_args
+    working_dir: /app/Crypto.SellAnalyser
+
+  signalcatcher:
+    image: cryptobotregistrybsn.azurecr.io/signal-catcher:latest
+    restart: unless-stopped
+    environment:
+      environment: live
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+      AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+      signalqueue: $SIGNAL_QUEUE
+
+  ui:
+    image: cryptobotregistrybsn.azurecr.io/crypto-bot-ui:latest
+    restart: unless-stopped
+    environment:
+      ConnectionStrings__cryptodbConnection: "Host=db;Port=5432;Username=postgres;Password=!Crypto100;Database=cryptodb;Pooling=true;Timeout=30;"
+    ports:
+      - 5050:5000 
+
+volumes:
+  db-data:
+  app-logs:
+
+    
