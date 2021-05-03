@@ -21,12 +21,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # adminer:
-  #   image: adminer
-  #   restart: unless-stopped
-  #   ports:
-  #     - 8080:8080
-
   logging:
     image: datalust/seq:2021.2
     restart: unless-stopped
@@ -46,7 +40,7 @@ services:
     #   retries: 5
 
   dbupdate:
-    image: cryptobotregistrybsn.azurecr.io/binance-trader:latest
+    image: bsngroup/trader:latest
     environment:
       DbAdminConnection: "Host=db;Port=5432;Username=postgres;Password=!Crypto100;Database=cryptodb;Pooling=true;Timeout=30;"
       Serilog__WriteTo__1__Args__ServerUrl: "http://logging:5341"
@@ -61,7 +55,7 @@ services:
       
 
   trader:
-    image: cryptobotregistrybsn.azurecr.io/binance-trader:latest
+    image: bsngroup/trader:latest
     restart: unless-stopped
     environment:
       ConnectionStrings__PostgresConnection: "Host=db;Port=5432;Username=postgres;Password=!Crypto100;Database=cryptodb;Pooling=true;Timeout=30;"
@@ -77,24 +71,8 @@ services:
     ports:
       - 5000:5000
 
-  sellAnalyser:
-    image: cryptobotregistrybsn.azurecr.io/binance-trader:latest
-    restart: unless-stopped
-    environment:
-      ConnectionStrings__PostgresConnection: "Host=db;Port=5432;Username=postgres;Password=!Crypto100;Database=cryptodb;Pooling=true;Timeout=30;"
-      Binance__FuturesKey: $Binance__FuturesKey
-      Binance__FuturesSecret: $Binance__FuturesSecret
-      Binance__FuturesUsdtBaseUrl: $Binance__FuturesUsdtBaseUrl
-      Binance__FuturesCoinMBaseUrl: $Binance__FuturesCoinMBaseUrl
-      Binance__FuturesWSSUrl: $Binance__FuturesWSSUrl
-      Serilog__WriteTo__1__Args__ServerUrl: "http://logging:5341"
-      TradeApiUrl: "http://trader:5000"
-      STARTUP_DLL: Crypto.SellAnalyser.dll
-      cli_args: $analyser_cli_args
-    working_dir: /app/Crypto.SellAnalyser
-
   signalcatcher:
-    image: cryptobotregistrybsn.azurecr.io/signal-catcher:latest
+    image: bsngroup/analyzer:latest
     restart: unless-stopped
     environment:
       environment: live
@@ -104,7 +82,7 @@ services:
       signalqueue: $SIGNAL_QUEUE
 
   ui:
-    image: cryptobotregistrybsn.azurecr.io/crypto-bot-ui:latest
+    image: bsngroup/cryptobot-ui:latest
     restart: unless-stopped
     environment:
       ConnectionStrings__cryptodbConnection: "Host=db;Port=5432;Username=postgres;Password=!Crypto100;Database=cryptodb;Pooling=true;Timeout=30;"

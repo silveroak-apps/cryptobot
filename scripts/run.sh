@@ -1,14 +1,7 @@
 #!/bin/bash
 set -xo pipefail
 
-registryName=cryptobotregistrybsn.azurecr.io
-
-#7f14f21e-9863-48ba-befc-92542c6d68de
-#secret=P.HDano2LKpZLW6Kl1rE.t78Lck.Auf5KC
-
-docker login $registryName --username $2 --password $3
-
-if  [[ $4 == "--live" ]]; then
+if  [[ $1 == "--live" ]]; then
     export analyser_cli_args="--takeovertrade" # live 
     export trader_cli_args="--realorders" # live
     if [[ -z ${Binance__FuturesKey} ]]; then
@@ -30,21 +23,19 @@ fi
 echo "Analyser cli args $analyser_cli_args"
 
 if [[ -z ${AWS_ACCESS_KEY_ID} ]]; then
-    echo "AWS_ACCESS_KEY_ID is required"
-    exit 1
+    echo "AWS_ACCESS_KEY_ID not found, using local queue"
 else
     echo "AWS_ACCESS_KEY_ID found"
 fi
 
 if [[ -z ${AWS_SECRET_ACCESS_KEY} ]]; then
-    echo "AWS_SECRET_ACCESS_KEY is required"
-    exit 1
+    echo "AWS_SECRET_ACCESS_KEY not found, using local queue"
 else 
     echo "AWS_SECRET_ACCESS_KEY found"
 fi
 
 if [[ -z ${AWS_DEFAULT_REGION} ]]; then
-    echo "AWS_DEFAULT_REGION='ap-southeast-2' is required"
+    echo "AWS_DEFAULT_REGION='ap-southeast-2' not found, using local queue"
 fi
 
 if [[ -z ${SIGNAL_QUEUE} ]]; then
