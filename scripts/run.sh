@@ -1,5 +1,26 @@
 #!/bin/bash
-set -xo pipefail
+set -o pipefail
+
+if [[ -z bsnbot.env ]]; then
+    echo "Env file not found"
+    exit $1
+else
+    source bsnbot.env
+fi
+
+if [[ -z ${POSTGRES_PASSWORD} ]]; then
+    echo "db password not found"
+    exit $1
+else
+    echo "db password found"
+fi
+
+if [[ -z ${_connectionString} ]]; then
+    echo "db connection string not found"
+    exit $1
+else
+    echo "db connection string found"
+fi
 
 if  [[ $1 == "--live" ]]; then
     export analyser_cli_args="--takeovertrade" # live 
@@ -22,34 +43,23 @@ fi
 
 echo "Analyser cli args $analyser_cli_args"
 
-if [[ -z ${AWS_ACCESS_KEY_ID} ]]; then
-    echo "AWS_ACCESS_KEY_ID not found, using local queue"
-else
-    echo "AWS_ACCESS_KEY_ID found"
-fi
-
-if [[ -z ${AWS_SECRET_ACCESS_KEY} ]]; then
+if [ -z ${AWS_ACCESS_KEY_ID} ] && [ -z ${AWS_SECRET_ACCESS_KEY} ] && [ -z ${AWS_DEFAULT_REGION} ]; then
     echo "AWS_SECRET_ACCESS_KEY not found, using local queue"
 else 
-    echo "AWS_SECRET_ACCESS_KEY found"
+    echo "AWS_ACCESS_KEYS found"
 fi
 
-if [[ -z ${AWS_DEFAULT_REGION} ]]; then
-    echo "AWS_DEFAULT_REGION='ap-southeast-2' not found, using local queue"
+if [[ `uname` == "Darwin" ]]; then
+    ABSDIR=$(pwd -P)
+else
+    ABSPATH=$(readlink -f $0)
+    ABSDIR=$(dirname $ABSPATH)
 fi
-
-if [[ -z ${SIGNAL_QUEUE} ]]; then
-    echo "SIGNAL_QUEUE is required"
-fi
-
-ABSPATH=$(readlink -f $0)
-ABSDIR=$(dirname $ABSPATH)
-#ABSDIR=$(pwd -P)
 FILENAME="$ABSDIR/docker-compose.yml"
-
+env
 docker-compose -f $FILENAME down
 #Removing images to pull latest images on every deployment
-docker image rm cryptobotregistrybsn.azurecr.io/binance-trader:latest
-docker image rm cryptobotregistrybsn.azurecr.io/signal-catcher:latest
-docker image rm cryptobotregistrybsn.azurecr.io/crypto-bot-ui:latest
+# docker image rm bsngroup/trader:latest
+# docker image rm bsngroup/analyzer:latest
+# docker image rm bsngroup/cryptobot-ui:latest
 docker-compose -f $FILENAME up -d   
