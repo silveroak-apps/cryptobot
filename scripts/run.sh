@@ -21,12 +21,12 @@ if [[ ! -f bsnbot.env ]]; then
     # `cp $ABSDIR/bsnbot.txt $ABSDIR/bsnbot.env`
     # echo 'sourcing bsnbot.env'
     # `source $ABSDIR/bsnbot.txt`
-    -trader_version "$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-    -analyzer_version "$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-    -_connectionString "Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;"
-    -DbAdminConnection "$(_connectionString)"
-    -ConnectionStrings__cryptodbConnection "$(_connectionString)"
-    -ConnectionStrings__PostgresConnection "$(_connectionString)"
+    set trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+    set analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+    set _connectionString="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;"
+    set DbAdminConnection="$(_connectionString)"
+    set ConnectionStrings__cryptodbConnection="$(_connectionString)"
+    set ConnectionStrings__PostgresConnection="$(_connectionString)"
 else 
     `cp $ABSDIR/bsnbot.env $ABSDIR/bsnbot.txt`
     echo export trader_version=$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.txt
