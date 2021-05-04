@@ -14,6 +14,7 @@ if [[ ! -f bsnbot.env ]]; then
     echo export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)" >> $ABSDIR/bsnbot.txt
     echo export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)" >> $ABSDIR/bsnbot.txt
     echo export POSTGRES_PASSWORD="${POSTGRES_PASSWORD}" >> $ABSDIR/bsnbot.txt
+     echo export _connectionString="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;" >> $ABSDIR/bsnbot.txt
     echo export DbAdminConnection="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;" >> $ABSDIR/bsnbot.txt
     echo export ConnectionStrings__cryptodbConnection="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;" >> $ABSDIR/bsnbot.txt
     echo export ConnectionStrings__PostgresConnection="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;" >> $ABSDIR/bsnbot.txt
