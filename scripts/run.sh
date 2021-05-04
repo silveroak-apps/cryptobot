@@ -7,7 +7,7 @@ else
     ABSPATH=$(readlink -f $0)
     ABSDIR=$(dirname $ABSPATH)
 fi
-
+echo $ABSDIR
 if [[ -z bsnbot.env ]]; then
     echo 'Env file not found'
     echo export trader_version=$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.txt
