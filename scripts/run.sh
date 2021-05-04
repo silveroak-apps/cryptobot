@@ -11,17 +11,18 @@ echo $ABSDIR
 echo $1
 if [[ ! -f bsnbot.env ]]; then
     echo 'Env file not found'
-    echo export trader_version=$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.txt
-    echo export analyzer_version=$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.txt
-    echo POSTGRES_PASSWORD=$1 >> $ABSDIR/bsnbot.txt
-    echo export _connectionString="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;" >> $ABSDIR/bsnbot.txt
-    echo export DbAdminConnection=${_connectionString} >> $ABSDIR/bsnbot.txt
-    echo export ConnectionStrings__cryptodbConnection=${_connectionString} >> $ABSDIR/bsnbot.txt
-    echo export ConnectionStrings__PostgresConnection=${_connectionString} >> $ABSDIR/bsnbot.txt
+    echo export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)" >> $ABSDIR/bsnbot.txt
+    echo export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)" >> $ABSDIR/bsnbot.txt
+    echo export POSTGRES_PASSWORD="$1" >> $ABSDIR/bsnbot.txt
+    echo export DbAdminConnection="Host=db;Port=5432;Username=postgres;Password=$1;Database=cryptodb;Pooling=true;Timeout=30;" >> $ABSDIR/bsnbot.txt
+    echo export ConnectionStrings__cryptodbConnection="Host=db;Port=5432;Username=postgres;Password=$1;Database=cryptodb;Pooling=true;Timeout=30;" >> $ABSDIR/bsnbot.txt
+    echo export ConnectionStrings__PostgresConnection="Host=db;Port=5432;Username=postgres;Password=$1;Database=cryptodb;Pooling=true;Timeout=30;" >> $ABSDIR/bsnbot.txt
     `cp $ABSDIR/bsnbot.txt $ABSDIR/bsnbot.env`
 else 
-    echo export trader_version=$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.env
-    echo export analyzer_version=$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.env
+    `cp $ABSDIR/bsnbot.env $ABSDIR/bsnbot.txt`
+    echo export trader_version=$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.txt
+    echo export analyzer_version=$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.txt
+     `cp $ABSDIR/bsnbot.txt $ABSDIR/bsnbot.env`
     echo 'sourcing bsnbot.env'
 fi
 echo $ConnectionStrings__PostgresConnection
