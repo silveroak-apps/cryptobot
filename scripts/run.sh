@@ -26,7 +26,7 @@ else
     echo 'sourcing bsnbot.env'
 fi
 echo $ConnectionStrings__PostgresConnection
-source bsnbot.env
+`source bsnbot.env`
 
 
 if [[ -z ${POSTGRES_PASSWORD} ]]; then
