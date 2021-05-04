@@ -13,7 +13,6 @@ if [[ ! -f bsnbot.env ]]; then
     echo 'Env file not found'
     export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
     export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-    export connectionString="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;"
     DbAdminConnection="${connectionString}"
     ConnectionStrings__cryptodbConnection="${connectionString}"
     ConnectionStrings__PostgresConnection="${connectionString}"
@@ -21,7 +20,9 @@ if [[ ! -f bsnbot.env ]]; then
 else
    export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
    export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-   export connectionString="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;"
+   DbAdminConnection="${connectionString}"
+   ConnectionStrings__cryptodbConnection="${connectionString}"
+   ConnectionStrings__PostgresConnection="${connectionString}"
    source $ABSDIR/bsnbot.env
 fi
 echo ${connectionString}
