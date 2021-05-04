@@ -26,7 +26,7 @@ if [[ ! -f bsnbot.env ]]; then
     set _connectionString="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;"
     set DbAdminConnection="${_connectionString}"
     set ConnectionStrings__cryptodbConnection="${_connectionString}"
-    set ConnectionStrings__PostgresConnection="${$_connectionString}"
+    set ConnectionStrings__PostgresConnection="${_connectionString}"
 else 
     `cp $ABSDIR/bsnbot.env $ABSDIR/bsnbot.txt`
     echo export trader_version=$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.txt
