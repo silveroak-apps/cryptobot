@@ -10,13 +10,13 @@ fi
 
 if [[ -z bsnbot.env ]]; then
     echo 'Env file not found'
-    echo 'export trader_version=$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)' >> $ABSDIR/bsnbot.txt
-    echo 'export analyzer_version=$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)' >> $ABSDIR/bsnbot.txt
-    echo 'POSTGRES_PASSWORD=$1' >> $ABSDIR/bsnbot.txt
-    echo 'export _connectionString="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;"' >> $ABSDIR/bsnbot.txt
-    echo 'export DbAdminConnection=${_connectionString}' >> $ABSDIR/bsnbot.txt
-    echo 'export ConnectionStrings__cryptodbConnection=${_connectionString}' >> $ABSDIR/bsnbot.txt
-    echo 'export ConnectionStrings__PostgresConnection=${_connectionString}' >> $ABSDIR/bsnbot.txt
+    echo export trader_version=$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.txt
+    echo export analyzer_version=$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.txt
+    echo POSTGRES_PASSWORD=$1 >> $ABSDIR/bsnbot.txt
+    echo export _connectionString="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;" >> $ABSDIR/bsnbot.txt
+    echo export DbAdminConnection=${_connectionString} >> $ABSDIR/bsnbot.txt
+    echo export ConnectionStrings__cryptodbConnection=${_connectionString} >> $ABSDIR/bsnbot.txt
+    echo export ConnectionStrings__PostgresConnection=${_connectionString} >> $ABSDIR/bsnbot.txt
     cp bsnbot.txt bsnbot.env
 fi
     
@@ -37,7 +37,7 @@ else
     echo "db connection string found"
 fi
 
-if  [[ $1 == "--live" ]]; then
+if  [[ $2 == "--live" ]]; then
     export analyser_cli_args="--takeovertrade" # live 
     export trader_cli_args="--realorders" # live
     if [[ -z ${Binance__FuturesKey} ]]; then
