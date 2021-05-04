@@ -70,6 +70,9 @@ services:
       STARTUP_DLL: Crypto.Trader.dll
       cli_args: $trader_cli_args
     working_dir: /app/Crypto.Trader
+    depends_on: 
+      db:
+        condition: service_healthy
     ports:
       - 5000:5000
 
@@ -81,6 +84,9 @@ services:
       - ./bsnbot.env
     environment:
       environment: live
+    depends_on: 
+      db:
+        condition: service_healthy
       
   ui:
     image: bsngroup/cryptobot-ui:latest
@@ -88,6 +94,9 @@ services:
     restart: unless-stopped
     env_file:
       - ./bsnbot.env
+    depends_on: 
+      db:
+        condition: service_healthy
     ports:
       - 5050:5000 
 

@@ -1,23 +1,31 @@
 #!/bin/bash
 set -o pipefail
+cp sample_bsnbot.env bsnbot.env
 
 if [[ -z bsnbot.env ]]; then
     echo "Env file not found"
-    exit $1
-else
-    source bsnbot.env
+    echo export trader_version=$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)
+    echo export analyzer_version=$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)
+    echo POSTGRES_PASSWORD=$1
+    echo export _connectionString="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;"
+    echo export DbAdminConnection=${_connectionString}
+    echo export ConnectionStrings__cryptodbConnection=${_connectionString}
+    echo export ConnectionStrings__PostgresConnection=${_connectionString}
 fi
+    
+source bsnbot.env
+
 
 if [[ -z ${POSTGRES_PASSWORD} ]]; then
     echo "db password not found"
-    exit $1
+    exit 1
 else
     echo "db password found"
 fi
 
 if [[ -z ${_connectionString} ]]; then
     echo "db connection string not found"
-    exit $1
+    exit 1
 else
     echo "db connection string found"
 fi
