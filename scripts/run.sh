@@ -8,7 +8,8 @@ else
     ABSDIR=$(dirname $ABSPATH)
 fi
 echo $ABSDIR
-if [[ -z bsnbot.env ]]; then
+echo $1
+if [[ ! -f bsnbot.env ]]; then
     echo 'Env file not found'
     echo export trader_version=$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.txt
     echo export analyzer_version=$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.txt
@@ -17,9 +18,13 @@ if [[ -z bsnbot.env ]]; then
     echo export DbAdminConnection=${_connectionString} >> $ABSDIR/bsnbot.txt
     echo export ConnectionStrings__cryptodbConnection=${_connectionString} >> $ABSDIR/bsnbot.txt
     echo export ConnectionStrings__PostgresConnection=${_connectionString} >> $ABSDIR/bsnbot.txt
-    cp bsnbot.txt bsnbot.env
+    `cp $ABSDIR/bsnbot.txt $ABSDIR/bsnbot.env`
+else 
+    echo export trader_version=$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.env
+    echo export analyzer_version=$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.env
+    echo 'sourcing bsnbot.env'
 fi
-    
+echo $ConnectionStrings__PostgresConnection
 source bsnbot.env
 
 
