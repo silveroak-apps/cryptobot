@@ -13,17 +13,17 @@ if [[ ! -f bsnbot.env ]]; then
     echo 'Env file not found'
     export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
     export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-    DbAdminConnection="${connectionString}"
-    ConnectionStrings__cryptodbConnection="${connectionString}"
-    ConnectionStrings__PostgresConnection="${connectionString}"
+    export DbAdminConnection="${connectionString}"
+    export ConnectionStrings__cryptodbConnection="${connectionString}"
+    export ConnectionStrings__PostgresConnection="${connectionString}"
     env > $ABSDIR/bsnbot.env
 else
+   source $ABSDIR/bsnbot.env
    export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
    export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-   DbAdminConnection="${connectionString}"
-   ConnectionStrings__cryptodbConnection="${connectionString}"
-   ConnectionStrings__PostgresConnection="${connectionString}"
-   source $ABSDIR/bsnbot.env
+   export DbAdminConnection="${connectionString}"
+   export ConnectionStrings__cryptodbConnection="${connectionString}"
+   export ConnectionStrings__PostgresConnection="${connectionString}"
 fi
 echo ${connectionString}
 
