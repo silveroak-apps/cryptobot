@@ -23,7 +23,7 @@ if [[ ! -f bsnbot.env ]]; then
     # `source $ABSDIR/bsnbot.txt`
     set trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
     set analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-    $_connectionString = "Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;"
+    set _connectionString = "Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;"
     #echo "##vso[task.setvariable variable=_connectionString;]${connectionString}"
     #set _connectionString="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;"
     set DbAdminConnection="${_connectionString}"
@@ -37,7 +37,7 @@ else
     echo 'sourcing bsnbot.env'
     `source $ABSDIR/bsnbot.env`
 fi
-echo ${_connectionString}
+echo $_connectionString
 
 if [[ -z ${POSTGRES_PASSWORD} ]]; then
     echo "db password not found"
