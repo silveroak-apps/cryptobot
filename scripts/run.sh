@@ -39,14 +39,14 @@ else
 fi
 echo ${_connectionString}
 
-if [[ -z ${POSTGRES_PASSWORD} ]]; then
+if [[ -z $(POSTGRES_PASSWORD) ]]; then
     echo "db password not found"
     exit 1
 else
     echo "db password found"
 fi
 
-if [[ -z ${_connectionString} ]]; then
+if [[ -z $(_connectionString) ]]; then
     echo "db connection string not found"
     exit 1
 else
