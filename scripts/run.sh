@@ -19,15 +19,18 @@ if [[ ! -f bsnbot.env ]]; then
     echo export ConnectionStrings__cryptodbConnection="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;" >> $ABSDIR/bsnbot.txt
     echo export ConnectionStrings__PostgresConnection="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;" >> $ABSDIR/bsnbot.txt
     `cp $ABSDIR/bsnbot.txt $ABSDIR/bsnbot.env`
+    echo 'sourcing bsnbot.env'
+    `source $ABSDIR/bsnbot.txt`
 else 
     `cp $ABSDIR/bsnbot.env $ABSDIR/bsnbot.txt`
     echo export trader_version=$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.txt
     echo export analyzer_version=$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.txt
      `cp $ABSDIR/bsnbot.txt $ABSDIR/bsnbot.env`
     echo 'sourcing bsnbot.env'
+    `source $ABSDIR/bsnbot.env`
 fi
-echo $ConnectionStrings__PostgresConnection
-`source $ABSDIR/bsnbot.env`
+echo ${ConnectionStrings__PostgresConnection}
+
 
 
 if [[ -z ${POSTGRES_PASSWORD} ]]; then
