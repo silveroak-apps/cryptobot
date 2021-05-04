@@ -17,12 +17,12 @@ if [[ ! -f bsnbot.env ]]; then
     DbAdminConnection="${connectionString}"
     ConnectionStrings__cryptodbConnection="${connectionString}"
     ConnectionStrings__PostgresConnection="${connectionString}"
-    env > bsnbot.env
+    env > $ABSDIR/bsnbot.env
 else
    export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
    export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
    export connectionString="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;"
-   `source bsnbot.env`
+   `source $ABSDIR/bsnbot.env`
 fi
 echo ${connectionString}
 
@@ -67,12 +67,6 @@ else
     echo "AWS_ACCESS_KEYS found"
 fi
 
-if [[ `uname` == "Darwin" ]]; then
-    ABSDIR=$(pwd -P)
-else
-    ABSPATH=$(readlink -f $0)
-    ABSDIR=$(dirname $ABSPATH)
-fi
 FILENAME="$ABSDIR/docker-compose.yml"
 env
 docker-compose -f $FILENAME down
