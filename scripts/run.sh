@@ -36,7 +36,7 @@ else
     echo 'sourcing bsnbot.env'
     `source $ABSDIR/bsnbot.env`
 fi
-echo ${ConnectionStrings__PostgresConnection}
+echo ${_connectionString}
 
 if [[ -z ${POSTGRES_PASSWORD} ]]; then
     echo "db password not found"
