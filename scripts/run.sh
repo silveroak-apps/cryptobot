@@ -11,33 +11,20 @@ echo $ABSDIR
 echo $1
 if [[ ! -f bsnbot.env ]]; then
     echo 'Env file not found'
-    # echo export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)" >> $ABSDIR/bsnbot.txt
-    # echo export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)" >> $ABSDIR/bsnbot.txt
-    # echo export POSTGRES_PASSWORD="${POSTGRES_PASSWORD}" >> $ABSDIR/bsnbot.txt
-    #echo export _connectionString="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;"
-    # echo export DbAdminConnection="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;" >> $ABSDIR/bsnbot.txt
-    # echo export ConnectionStrings__cryptodbConnection="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;" >> $ABSDIR/bsnbot.txt
-    # echo export ConnectionStrings__PostgresConnection="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;" >> $ABSDIR/bsnbot.txt
-    # `cp $ABSDIR/bsnbot.txt $ABSDIR/bsnbot.env`
-    # echo 'sourcing bsnbot.env'
-    # `source $ABSDIR/bsnbot.txt`
-    set trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-    set analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-    connectionString = "Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;"
-    echo "##vso[task.setvariable variable=_connectionString;]$connectionString"
-    #set _connectionString="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;"
-    set DbAdminConnection="${_connectionString}"
-    set ConnectionStrings__cryptodbConnection="${_connectionString}"
-    set ConnectionStrings__PostgresConnection="${_connectionString}"
-else 
-    `cp $ABSDIR/bsnbot.env $ABSDIR/bsnbot.txt`
-    echo export trader_version=$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.txt
-    echo export analyzer_version=$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1) >> $ABSDIR/bsnbot.txt
-     `cp $ABSDIR/bsnbot.txt $ABSDIR/bsnbot.env`
-    echo 'sourcing bsnbot.env'
-    `source $ABSDIR/bsnbot.env`
+    export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+    export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+    export connectionString="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;"
+    DbAdminConnection="${connectionString}"
+    ConnectionStrings__cryptodbConnection="${connectionString}"
+    ConnectionStrings__PostgresConnection="${connectionString}"
+    env > bsnbot.env
+else
+   export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+   export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+   export connectionString="Host=db;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=cryptodb;Pooling=true;Timeout=30;"
+   `source bsnbot.env`
 fi
-echo $_connectionString
+echo ${connectionString}
 
 if [[ -z ${POSTGRES_PASSWORD} ]]; then
     echo "db password not found"
@@ -46,7 +33,7 @@ else
     echo "db password found"
 fi
 
-if [[ -z $_connectionString ]]; then
+if [[ -z $connectionString ]]; then
     echo "db connection string not found"
     exit 1
 else
