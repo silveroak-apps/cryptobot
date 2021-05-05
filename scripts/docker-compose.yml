@@ -108,8 +108,7 @@ services:
       NGROK_USERNAME: ${NGROK_USERNAME}
       NGROK_PASSWORD: ${NGROK_PASSWORD}
       NGROK_AUTH: ${NGROK_AUTH}
-    links:
-      - analyzer:8090
+      NGROK_PORT: analyzer:8090
     ports:
       - 4040:4040
 
