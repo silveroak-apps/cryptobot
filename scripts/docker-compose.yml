@@ -93,6 +93,7 @@ services:
     restart: unless-stopped
     environment:  
       ConnectionStrings__cryptodbConnection: "Host=db;Port=5432;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Database=${POSTGRES_DB};Pooling=true;Timeout=30;"
+    depends_on: 
       db:
         condition: service_healthy
     ports:
