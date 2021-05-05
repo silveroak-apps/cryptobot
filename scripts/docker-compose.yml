@@ -81,7 +81,7 @@ services:
     depends_on: 
       db:
         condition: service_healthy
-    port:
+    ports:
       - 8090:8090
       
   ui:
