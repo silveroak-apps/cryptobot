@@ -34,7 +34,6 @@ else
 fi
 
 if  [[ $1 == "--live" ]]; then
-    export analyser_cli_args="--takeovertrade" # live 
     export trader_cli_args="--realorders" # live
     if [[ -z ${Binance__FuturesKey} ]]; then
         echo "Binance__FuturesKey is required"
@@ -51,8 +50,6 @@ if  [[ $1 == "--live" ]]; then
 else
     echo "Not running live"
 fi
-
-echo "Analyser cli args ${analyser_cli_args}"
 
 if [ -z ${AWS_ACCESS_KEY_ID} ] && [ -z ${AWS_SECRET_ACCESS_KEY} ] && [ -z ${AWS_DEFAULT_REGION} ]; then
     echo "AWS_SECRET_ACCESS_KEY not found, using local queue"
