@@ -103,8 +103,12 @@ services:
     image: wernight/ngrok
     container_name: webhook
     restart: unless-stopped
+    environment: 
+      NGROK_USERNAME: ${NGROK_USERNAME}
+      NGROK_PASSWORD: ${NGROK_PASSWORD}
+      NGROK_AUTH: ${NGROK_AUTH}
     links:
-      - analyzer:http
+      - analyzer:8090
     ports:
       - 4040:4040
 
