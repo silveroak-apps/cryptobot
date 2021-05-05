@@ -12,11 +12,18 @@ export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/c
 export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
 export ui_version="latest"
 
-if [[ ! -f bsnbot.env ]]; then
-    echo 'Env file not found'
-    env > $ABSDIR/bsnbot.env
+if [[ -z ${POSTGRES_DB} ]]; then
+    echo "db name not found"
+    exit 1
 else
-   source $ABSDIR/bsnbot.env
+    echo "db name found"
+fi
+
+if [[ -z ${POSTGRES_USER} ]]; then
+    echo "db user not found"
+    exit 1
+else
+    echo "db user found"
 fi
 
 if [[ -z ${POSTGRES_PASSWORD} ]]; then
@@ -26,14 +33,7 @@ else
     echo "db password found"
 fi
 
-if [[ -z $connectionString ]]; then
-    echo "db connection string not found"
-    exit 1
-else
-    echo "db connection string found"
-fi
-
-if  [[ $2 == "--live" ]]; then
+if  [[ $1 == "--live" ]]; then
     export analyser_cli_args="--takeovertrade" # live 
     export trader_cli_args="--realorders" # live
     if [[ -z ${Binance__FuturesKey} ]]; then
@@ -52,7 +52,7 @@ else
     echo "Not running live"
 fi
 
-echo "Analyser cli args $analyser_cli_args"
+echo "Analyser cli args ${analyser_cli_args}"
 
 if [ -z ${AWS_ACCESS_KEY_ID} ] && [ -z ${AWS_SECRET_ACCESS_KEY} ] && [ -z ${AWS_DEFAULT_REGION} ]; then
     echo "AWS_SECRET_ACCESS_KEY not found, using local queue"
@@ -60,11 +60,18 @@ else
     echo "AWS_ACCESS_KEYS found"
 fi
 
-FILENAME="$ABSDIR/docker-compose.yml"
+if [[ -z ${SIGNAL_QUEUE} ]]; then
+    echo " SIGNAL_QUEUE not found"
+    exit 1
+else
+    echo "SIGNAL_QUEUE found"
+fi
+
+FILENAME="${ABSDIR}/docker-compose.yml"
+docker-compose -f ${FILENAME} down
 env
-docker-compose -f $FILENAME down
 #Removing images to pull latest images on every deployment
 docker image rm bsngroup/trader:latest
 docker image rm bsngroup/analyzer:latest
 docker image rm bsngroup/cryptobot-ui:latest
-docker-compose -f $FILENAME up -d   
+docker-compose -f ${FILENAME} up -d   
