@@ -7,25 +7,17 @@ else
     ABSPATH=$(readlink -f $0)
     ABSDIR=$(dirname $ABSPATH)
 fi
-echo $ABSDIR
-echo $1
+
+export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+export ui_version="latest"
+
 if [[ ! -f bsnbot.env ]]; then
     echo 'Env file not found'
-    export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-    export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-    export DbAdminConnection="${connectionString}"
-    export ConnectionStrings__cryptodbConnection="${connectionString}"
-    export ConnectionStrings__PostgresConnection="${connectionString}"
     env > $ABSDIR/bsnbot.env
 else
    source $ABSDIR/bsnbot.env
-   export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-   export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-   export DbAdminConnection="${connectionString}"
-   export ConnectionStrings__cryptodbConnection="${connectionString}"
-   export ConnectionStrings__PostgresConnection="${connectionString}"
 fi
-echo ${connectionString}
 
 if [[ -z ${POSTGRES_PASSWORD} ]]; then
     echo "db password not found"
@@ -72,7 +64,7 @@ FILENAME="$ABSDIR/docker-compose.yml"
 env
 docker-compose -f $FILENAME down
 #Removing images to pull latest images on every deployment
-# docker image rm bsngroup/trader:latest
-# docker image rm bsngroup/analyzer:latest
-# docker image rm bsngroup/cryptobot-ui:latest
+docker image rm bsngroup/trader:latest
+docker image rm bsngroup/analyzer:latest
+docker image rm bsngroup/cryptobot-ui:latest
 docker-compose -f $FILENAME up -d   

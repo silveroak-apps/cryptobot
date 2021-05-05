@@ -9,7 +9,6 @@ services:
     env_file:
       - ./bsnbot.env
     environment:
-      POSTGRES_DB: cryptodb
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - type: volume
@@ -28,7 +27,6 @@ services:
     container_name: logging
     restart: unless-stopped
     environment:
-      # SEQ_FIRSTRUN_ADMINPASSWORDHASH: "$PH"
       ACCEPT_EULA: Y
     volumes:
       - type: volume
@@ -43,32 +41,30 @@ services:
     #   retries: 5
 
   dbupdate:
-    image: bsngroup/trader:$trader_version
+    image: bsngroup/trader:${trader_version}
     container_name: dbupdate
     env_file:
       - ./bsnbot.env
     environment:
+      DbAdminConnection: "${connectionString}"
       Serilog__WriteTo__1__Args__ServerUrl: "http://logging:5341"
       STARTUP_DLL: Crypto.Database.Upgrade.dll
-      Serilog__MinimumLevel: Debug
     working_dir: /app/Crypto.Database.Upgrade
     depends_on: 
       db:
         condition: service_healthy
-      # logging: 
-      #   condition: true
       
-
   trader:
-    image: bsngroup/trader:$trader_version
+    image: bsngroup/trader:${trader_version}
     container_name: trader
     restart: unless-stopped
     env_file:
       - ./bsnbot.env
     environment:
+      ConnectionStrings__PostgresConnection: "${connectionString}"
       Serilog__WriteTo__1__Args__ServerUrl: "http://logging:5341"
       STARTUP_DLL: Crypto.Trader.dll
-      cli_args: $trader_cli_args
+      cli_args: ${trader_cli_args}
     working_dir: /app/Crypto.Trader
     depends_on: 
       db:
@@ -77,23 +73,25 @@ services:
       - 5000:5000
 
   analyzer:
-    image: bsngroup/analyzer:$analyzer_version
+    image: bsngroup/analyzer:${analyzer_version}
     container_name: analyzer
     restart: unless-stopped
     env_file:
       - ./bsnbot.env
-    environment:
-      environment: live
     depends_on: 
       db:
         condition: service_healthy
+    port:
+      - 8090:8090
       
   ui:
-    image: bsngroup/cryptobot-ui:latest
+    image: bsngroup/cryptobot-ui:${ui_version}
     container_name: ui
     restart: unless-stopped
     env_file:
       - ./bsnbot.env
+    environment:  
+      ConnectionStrings__cryptodbConnection: "${connectionString}"
     depends_on: 
       db:
         condition: service_healthy
