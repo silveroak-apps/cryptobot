@@ -97,7 +97,19 @@ services:
       db:
         condition: service_healthy
     ports:
-      - 5050:5000 
+      - 5050:5000
+  
+  webhook:
+    image: wernight/ngrok
+    container_name: webhook
+    restart: unless-stopped
+    environment:
+      NGROK_USERNAME: ${NGROK_USERNAME}
+      NGROK_PASSWORD: ${NGROK_PASSWORD}
+    links:
+      - "analyzer:8060"
+    ports:
+      - 4040:4040
 
 volumes:
   db-data:
