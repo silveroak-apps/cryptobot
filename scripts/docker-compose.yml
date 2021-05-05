@@ -60,6 +60,7 @@ services:
       Binance__FuturesCoinMBaseUrl: ${Binance__FuturesCoinMBaseUrl}
       Binance__FuturesWSSUrl: ${Binance__FuturesWSSUrl}
       Serilog__WriteTo__1__Args__ServerUrl: "http://logging:5341"
+      Serilog__MinimumLevel: ${Serilog__MinimumLevel}
       STARTUP_DLL: Crypto.Trader.dll
       cli_args: ${trader_cli_args}
     working_dir: /app/Crypto.Trader
