@@ -10,7 +10,7 @@ fi
 
 export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
 export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-export ui_version="latest"
+export ui_version="$(curl -s https://api.github.com/repos/bsn-group/cryptobot-ui/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
 
 if [[ -z ${POSTGRES_DB} ]]; then
     echo "db name not found"
