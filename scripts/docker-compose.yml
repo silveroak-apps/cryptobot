@@ -109,7 +109,7 @@ services:
       NGROK_PASSWORD: ${NGROK_PASSWORD}
       NGROK_AUTH: ${NGROK_AUTH}
       NGROK_PORT: analyzer:8090
-      NGROK_HEADER: "localhost:8090"
+      NGROK_HEADER: localhost:8090
     ports:
       - 4040:4040
 
