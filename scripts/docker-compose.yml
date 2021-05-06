@@ -89,7 +89,7 @@ services:
       - 8090:8090
       
   ui:
-    image:  bsngroup/analyzer:${ui_version}
+    image: bsngroup/cryptobot-ui:${ui_version}
     container_name: ui
     restart: unless-stopped
     environment:  
