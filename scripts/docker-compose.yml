@@ -105,6 +105,9 @@ services:
     container_name: webhook
     restart: unless-stopped
     environment: 
+      NGROK_USERNAME: ${NGROK_USERNAME}
+      NGROK_PASSWORD: ${NGROK_PASSWORD}
+      NGROK_AUTH: disable_options_auth
       NGROK_PORT: analyzer:8090
       NGROK_HEADER: localhost:8090
     ports:
