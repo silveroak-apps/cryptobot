@@ -89,7 +89,7 @@ services:
       - 8090:8090
       
   ui:
-    image:  ${ui_version}
+    image:  bsngroup/analyzer:${ui_version}
     container_name: ui
     restart: unless-stopped
     environment:  
