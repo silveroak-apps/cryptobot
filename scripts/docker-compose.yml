@@ -6,10 +6,9 @@ services:
     image: postgres:13.2-alpine
     container_name: db
     restart: unless-stopped
-    env_file:
-      - ./bsnbot.env
     environment:
-      POSTGRES_DB: cryptodb
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - type: volume
@@ -28,7 +27,6 @@ services:
     container_name: logging
     restart: unless-stopped
     environment:
-      # SEQ_FIRSTRUN_ADMINPASSWORDHASH: "$PH"
       ACCEPT_EULA: Y
     volumes:
       - type: volume
@@ -36,18 +34,12 @@ services:
         target: /data
     ports:
       - 5341:80
-    # healthcheck: # no curl in image
-    #   test: ["CMD", "curl", "-f", "http://localhost:5341"]
-    #   interval: 30s
-    #   timeout: 10s
-    #   retries: 5
 
   dbupdate:
-    image: bsngroup/trader:$trader_version
+    image: bsngroup/trader:${trader_version}
     container_name: dbupdate
-    env_file:
-      - ./bsnbot.env
     environment:
+      DbAdminConnection: "Host=db;Port=5432;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Database=${POSTGRES_DB};Pooling=true;Timeout=30;"
       Serilog__WriteTo__1__Args__ServerUrl: "http://logging:5341"
       STARTUP_DLL: Crypto.Database.Upgrade.dll
       Serilog__MinimumLevel: Debug
@@ -55,20 +47,22 @@ services:
     depends_on: 
       db:
         condition: service_healthy
-      # logging: 
-      #   condition: true
       
-
   trader:
-    image: bsngroup/trader:$trader_version
+    image: bsngroup/trader:${trader_version}
     container_name: trader
     restart: unless-stopped
-    env_file:
-      - ./bsnbot.env
     environment:
+      ConnectionStrings__PostgresConnection: "Host=db;Port=5432;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Database=${POSTGRES_DB};Pooling=true;Timeout=30;"
+      Binance__FuturesKey: ${Binance__FuturesKey}
+      Binance__FuturesSecret: ${Binance__FuturesSecret}
+      Binance__FuturesUsdtBaseUrl: ${Binance__FuturesUsdtBaseUrl}
+      Binance__FuturesCoinMBaseUrl: ${Binance__FuturesCoinMBaseUrl}
+      Binance__FuturesWSSUrl: ${Binance__FuturesWSSUrl}
       Serilog__WriteTo__1__Args__ServerUrl: "http://logging:5341"
+      Serilog__MinimumLevel: ${Serilog__MinimumLevel}
       STARTUP_DLL: Crypto.Trader.dll
-      cli_args: $trader_cli_args
+      cli_args: ${trader_cli_args}
     working_dir: /app/Crypto.Trader
     depends_on: 
       db:
@@ -77,28 +71,46 @@ services:
       - 5000:5000
 
   analyzer:
-    image: bsngroup/analyzer:$analyzer_version
+    image: bsngroup/analyzer:${analyzer_version}
     container_name: analyzer
     restart: unless-stopped
-    env_file:
-      - ./bsnbot.env
     environment:
-      environment: live
-    depends_on: 
-      db:
-        condition: service_healthy
-      
-  ui:
-    image: bsngroup/cryptobot-ui:latest
-    container_name: ui
-    restart: unless-stopped
-    env_file:
-      - ./bsnbot.env
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
+      signalqueue: ${SIGNAL_QUEUE}
     depends_on: 
       db:
         condition: service_healthy
     ports:
-      - 5050:5000 
+      - 8090:8090
+      
+  ui:
+    image: bsngroup/cryptobot-ui:${ui_version}
+    container_name: ui
+    restart: unless-stopped
+    environment:  
+      ConnectionStrings__cryptodbConnection: "Host=db;Port=5432;Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD};Database=${POSTGRES_DB};Pooling=true;Timeout=30;"
+    depends_on: 
+      db:
+        condition: service_healthy
+    ports:
+      - 5050:5000
+  
+  webhook:
+    image: wernight/ngrok
+    container_name: webhook
+    restart: unless-stopped
+    environment: 
+      NGROK_USERNAME: ${NGROK_USERNAME}
+      NGROK_PASSWORD: ${NGROK_PASSWORD}
+      NGROK_AUTH: ${NGROK_AUTH}
+      NGROK_PORT: analyzer:8090
+    ports:
+      - 4040:4040
 
 volumes:
   db-data:
