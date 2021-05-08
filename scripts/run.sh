@@ -8,10 +8,6 @@ else
     ABSDIR=$(dirname $ABSPATH)
 fi
 
-if [[   ! -f $ABSDIR/bsnbot.env ]]; then
-    cp $ABSDIR/sample_bsnbot.env $ABSDIR/bsnbot.env
-fi
-
 echo $ABSDIR
 echo "Sourcing bsnbot.env $ABSDIR/bsnbot.env"
 source "$ABSDIR/bsnbot.env"
