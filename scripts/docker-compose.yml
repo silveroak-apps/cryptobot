@@ -62,7 +62,7 @@ services:
       Serilog__WriteTo__1__Args__ServerUrl: "http://logging:5341"
       Serilog__MinimumLevel: ${Serilog__MinimumLevel}
       STARTUP_DLL: Crypto.Trader.dll
-      cli_args: ${trader_cli_args}
+      cli_args: --realorders
     working_dir: /app/Crypto.Trader
     depends_on: 
       db:
