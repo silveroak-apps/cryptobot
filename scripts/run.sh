@@ -8,9 +8,17 @@ else
     ABSDIR=$(dirname $ABSPATH)
 fi
 
-export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-export ui_version="$(curl -s https://api.github.com/repos/bsn-group/cryptobot-ui/commits |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+source $ABSDIR/bsnbot.env
+
+if [[ -z ${IMAGE_VERSION} ]]; then
+    export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/branches/main |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+    export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/branches/main |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+    export ui_version="$(curl -s https://api.github.com/repos/bsn-group/cryptobot-ui/branches/main |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+else
+    export trader_version=${IMAGE_VERSION}
+    export analyzer_version=${IMAGE_VERSION}
+    export ui_version=${IMAGE_VERSION}
+fi
 
 if [[ -z ${POSTGRES_DB} ]]; then
     echo "db name not found"
@@ -46,15 +54,22 @@ if  [[ $1 == "--live" ]]; then
         exit 1
     else 
         echo "Binance__FuturesSecret found"
+        echo "Running live"
     fi
 else
     echo "Not running live"
 fi
 
-if [ -z ${AWS_ACCESS_KEY_ID} ] && [ -z ${AWS_SECRET_ACCESS_KEY} ] && [ -z ${AWS_DEFAULT_REGION} ]; then
-    echo "AWS_SECRET_ACCESS_KEY not found, using local queue"
+if [ -z ${AWS_ACCESS_KEY_ID} ] || [ -z ${AWS_SECRET_ACCESS_KEY} ] || [ -z ${AWS_DEFAULT_REGION} ]; then
+    echo "AWS Listener details not found, using local queue"
+    if [ -z ${NGROK_USERNAME} ] || [ -z ${NGROK_PASSWORD} ] || [ -z ${NGROK_AUTH} ]; then
+        echo "NGROK Listener details for local queue not found"
+        exit 1
+    else 
+        echo "NGROK Listener details found"
+    fi
 else 
-    echo "AWS_ACCESS_KEYS found"
+    echo "AWS Listener found"
 fi
 
 if [[ -z ${SIGNAL_QUEUE} ]]; then
@@ -66,9 +81,8 @@ fi
 
 FILENAME="${ABSDIR}/docker-compose.yml"
 docker-compose -f ${FILENAME} down
-env
 #Removing images to pull latest images on every deployment
 docker image rm bsngroup/trader:latest
 docker image rm bsngroup/analyzer:latest
 docker image rm bsngroup/cryptobot-ui:latest
-docker-compose -f ${FILENAME} up -d   
+docker-compose -f ${FILENAME} up -d
