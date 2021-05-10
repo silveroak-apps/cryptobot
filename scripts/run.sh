@@ -62,13 +62,7 @@ else
 fi
 
 if [ -z ${AWS_ACCESS_KEY_ID} ] || [ -z ${AWS_SECRET_ACCESS_KEY} ] || [ -z ${AWS_DEFAULT_REGION} ]; then
-    echo "AWS Listener details not found, using local queue"
-    if [ -z ${NGROK_USERNAME} ] || [ -z ${NGROK_PASSWORD} ] || [ -z ${NGROK_AUTH} ]; then
-        echo "NGROK Listener details for local queue not found"
-        exit 1
-    else 
-        echo "NGROK Listener details found"
-    fi
+    echo "AWS Listener details not found, using ngrok local queue"
 else 
     echo "AWS Listener found"
 fi
