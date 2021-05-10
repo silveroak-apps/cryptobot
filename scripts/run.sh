@@ -1,5 +1,7 @@
 #!/bin/bash
 set -o pipefail
+export POSTGRES_DB="cryptodb"
+export POSTGRES_USER="postgres"
 
 if [[ `uname` == "Darwin" ]]; then
     ABSDIR=$( cd "$(dirname "$0")" ; pwd -P )
