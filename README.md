@@ -6,11 +6,11 @@ This repository contains the scripts to pull down and run the various components
 
 ## Architecture
 
-![BSN Cryptobot Architecture](Architecture.png "BSN Cryptobot Architecture")
+![BSN Cryptobot Architecture](media/Architecture.png "BSN Cryptobot Architecture")
 
 ## State diagram
 
-![BSN Cryptobot State Diagram](StateMachine.png "BSN Cryptobot State Diagram")
+![BSN Cryptobot State Diagram](media/StateMachine.png "BSN Cryptobot State Diagram")
 
 ## Bot sources
 
