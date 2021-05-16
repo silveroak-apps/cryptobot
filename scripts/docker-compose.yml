@@ -63,6 +63,7 @@ services:
       Serilog__MinimumLevel: ${Serilog__MinimumLevel}
       STARTUP_DLL: Crypto.Trader.dll
       cli_args: --realorders
+      MarketEventUrl: http://analyzer:8090/api/v1/sendEvent
     working_dir: /app/Crypto.Trader
     depends_on: 
       db:
