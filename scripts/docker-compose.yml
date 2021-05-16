@@ -68,7 +68,7 @@ services:
       db:
         condition: service_healthy
     ports:
-      - 5000:5000
+      - 5000:80
 
   analyzer:
     image: bsngroup/analyzer:${analyzer_version}
