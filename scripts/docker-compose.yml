@@ -113,5 +113,3 @@ services:
 volumes:
   db-data:
   app-logs:
-
-    
