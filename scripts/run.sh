@@ -76,10 +76,12 @@ else
     echo "SIGNAL_QUEUE found"
 fi
 
+
 if [[ -z ${IMAGE_VERSION} ]]; then
-    export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/branches/main |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-    export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/branches/main |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-    export ui_version="$(curl -s https://api.github.com/repos/bsn-group/cryptobot-ui/branches/main |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+    BRANCH="${BRANCH:-main}"
+    export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/branches/${BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+    export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/branches/${BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+    export ui_version="$(curl -s https://api.github.com/repos/bsn-group/cryptobot-ui/branches/${BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
 else
     export trader_version=${IMAGE_VERSION}
     export analyzer_version=${IMAGE_VERSION}

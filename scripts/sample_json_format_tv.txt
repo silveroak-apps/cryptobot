@@ -1,0 +1,49 @@
+
+
+{ 
+        "name": "{{strategy.order.action}}_{{strategy.order.alert_message}}_matic_war_13m", 
+        "price": {{close}},
+        "contracts": {{strategy.order.contracts}},
+        "symbol": "MATICUSDT", 
+        "market": "USDT", 
+        "category": "war_matic_13m",
+        "timeFrame": 13, 
+        "exchange": "BinanceFutures" ,
+       "TVStrategyVersion": 39
+    }
+
+{ 
+        "name": "{{strategy.order.action}}_{{strategy.order.alert_message}}_bnb_perp_war_1h", 
+        "price": {{close}},
+        "contracts": {{strategy.order.contracts}},
+        "symbol": "BNBUSD_PERP", 
+        "market": "USD", 
+        "category": "war_bnb_perp_1h",
+        "timeFrame": 60, 
+        "exchange": "BinanceFutures" ,
+       "TVStrategyVersion": 39
+    }
+
+{ 
+        "name": "{{strategy.order.action}}_{{strategy.order.alert_message}}_eth_perp_war_1m", 
+        "price": {{close}},
+        "contracts": {{strategy.order.contracts}},
+        "symbol": "ETHUSD_PERP", 
+        "market": "USD", 
+        "category": "war_eth_perp_1m",
+        "timeFrame": 1, 
+        "exchange": "BinanceFutures",
+       "TVStrategyVersion": 45
+    }
+
+{ 
+        "name": "{{strategy.order.action}}_{{strategy.order.alert_message}}_btc_perp_war_13m", 
+        "price": {{close}},
+        "contracts": {{strategy.order.contracts}},
+        "symbol": "BTCUSD_PERP", 
+        "market": "USD", 
+        "category": "war_btc_perp_13m",
+        "timeFrame": 13, 
+        "exchange": "BinanceFutures",
+       "TVStrategyVersion": 39
+    }
