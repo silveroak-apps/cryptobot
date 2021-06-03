@@ -78,10 +78,12 @@ fi
 
 
 if [[ -z ${IMAGE_VERSION} ]]; then
-    BRANCH="${BRANCH:-main}"
-    export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/branches/${BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-    export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/branches/${BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-    export ui_version="$(curl -s https://api.github.com/repos/bsn-group/cryptobot-ui/branches/${BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+    TRADER_BRANCH="${TRADER_BRANCH:-main}"
+    ANALYZER_BRANCH="${ANALYZER_BRANCH:-main}"
+    UI_BRANCH="${UI_BRANCH:-main}"
+    export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/branches/${TRADER_BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+    export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/branches/${ANALYZER_BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+    export ui_version="$(curl -s https://api.github.com/repos/bsn-group/cryptobot-ui/branches/${UI_BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
 else
     export trader_version=${IMAGE_VERSION}
     export analyzer_version=${IMAGE_VERSION}
@@ -91,7 +93,7 @@ fi
 FILENAME="${ABSDIR}/docker-compose.yml"
 docker-compose -f ${FILENAME} down
 #Removing images to pull latest images on every deployment
-docker image rm bsngroup/trader:latest
-docker image rm bsngroup/analyzer:latest
-docker image rm bsngroup/cryptobot-ui:latest
+docker image rm bsngroup/trader:${IMAGE_VERSION} >> /dev/null
+docker image rm bsngroup/analyzer:${IMAGE_VERSION} >> /dev/null
+docker image rm bsngroup/cryptobot-ui:${IMAGE_VERSION} >> /dev/null
 docker-compose -f ${FILENAME} up -d
