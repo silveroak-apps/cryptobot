@@ -64,6 +64,8 @@ services:
       STARTUP_DLL: Crypto.Trader.dll
       cli_args: --realorders
       MarketEventUrl: http://analyzer:8090/api/v1/sendEvent
+      ByBit__FuturesKey: ${ByBit__FuturesKey}
+      ByBit__FuturesSecret: ${ByBit__FuturesSecret}
     working_dir: /app/Crypto.Trader
     depends_on: 
       db:
