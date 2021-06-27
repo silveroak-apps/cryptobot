@@ -66,6 +66,9 @@ services:
       MarketEventUrl: http://analyzer:8090/api/v1/sendEvent
       ByBit__FuturesKey: ${ByBit__FuturesKey}
       ByBit__FuturesSecret: ${ByBit__FuturesSecret}
+      Pushover__Url: ${Pushover__Url}
+      Pushover__AppKey: ${Pushover__AppKey}
+      Pushover__UserKey: ${Pushover__UserKey}
     working_dir: /app/Crypto.Trader
     depends_on: 
       db:
@@ -85,6 +88,9 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION}
       signalqueue: ${SIGNAL_QUEUE}
+      Pushover__Url: ${Pushover__Url}
+      Pushover__AppKey: ${Pushover__AppKey}
+      Pushover__UserKey: ${Pushover__UserKey}
     depends_on: 
       db:
         condition: service_healthy
