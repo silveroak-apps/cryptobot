@@ -82,7 +82,7 @@ if [[ -z ${IMAGE_VERSION} ]]; then
     ANALYZER_BRANCH="${ANALYZER_BRANCH:-main}"
     UI_BRANCH="${UI_BRANCH:-main}"
     export trader_version="$(curl -s https://api.github.com/repos/silveroak-apps/trader/branches/${TRADER_BRANCH} | jq -r .commit.sha)"
-    export $analyzer_version="$(curl -s https://api.github.com/repos/silveroak-apps/analyzer/branches/${ANALYZER_BRANCH} | jq -r .commit.sha)"
+    export analyzer_version="$(curl -s https://api.github.com/repos/silveroak-apps/analyzer/branches/${ANALYZER_BRANCH} | jq -r .commit.sha)"
     export ui_version="$(curl -s https://api.github.com/repos/silveroak-apps/cryptobot-ui/branches/${UI_BRANCH} | jq -r .commit.sha)"
 else
     export trader_version=${IMAGE_VERSION}
@@ -90,7 +90,7 @@ else
     export ui_version=${IMAGE_VERSION}
 fi
 
-echo $trader_version $analyzer_version $ui_version
+
 
 FILENAME="${ABSDIR}/docker-compose.yml"
 docker-compose -f ${FILENAME} down
