@@ -81,9 +81,9 @@ if [[ -z ${IMAGE_VERSION} ]]; then
     TRADER_BRANCH="${TRADER_BRANCH:-main}"
     ANALYZER_BRANCH="${ANALYZER_BRANCH:-main}"
     UI_BRANCH="${UI_BRANCH:-main}"
-    export trader_version="$(curl -s https://api.github.com/repos/bsn-group/trader/branches/${TRADER_BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-    export analyzer_version="$(curl -s https://api.github.com/repos/bsn-group/analyzer/branches/${ANALYZER_BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-    export ui_version="$(curl -s https://api.github.com/repos/bsn-group/cryptobot-ui/branches/${UI_BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+    export trader_version="$(curl -s https://api.github.com/repos/silveroak-apps/trader/branches/${TRADER_BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+    export analyzer_version="$(curl -s https://api.github.com/repos/silveroak-apps/analyzer/branches/${ANALYZER_BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+    export ui_version="$(curl -s https://api.github.com/repos/silveroak-apps/cryptobot-ui/branches/${UI_BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
 else
     export trader_version=${IMAGE_VERSION}
     export analyzer_version=${IMAGE_VERSION}
