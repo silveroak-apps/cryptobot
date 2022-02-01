@@ -81,14 +81,16 @@ if [[ -z ${IMAGE_VERSION} ]]; then
     TRADER_BRANCH="${TRADER_BRANCH:-main}"
     ANALYZER_BRANCH="${ANALYZER_BRANCH:-main}"
     UI_BRANCH="${UI_BRANCH:-main}"
-    export trader_version="$(curl -s https://api.github.com/repos/silveroak-apps/trader/branches/${TRADER_BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-    export analyzer_version="$(curl -s https://api.github.com/repos/silveroak-apps/analyzer/branches/${ANALYZER_BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
-    export ui_version="$(curl -s https://api.github.com/repos/silveroak-apps/cryptobot-ui/branches/${UI_BRANCH} |grep -oP '(?<=(\"sha\"\: \"))[^\"]*' |head -1)"
+    export trader_version="$(curl -s https://api.github.com/repos/silveroak-apps/trader/branches/${TRADER_BRANCH} | jq .commit.sha)"
+    export $analyzer_version="$(curl -s https://api.github.com/repos/silveroak-apps/analyzer/branches/${ANALYZER_BRANCH} | jq .commit.sha)"
+    export ui_version="$(curl -s https://api.github.com/repos/silveroak-apps/cryptobot-ui/branches/${UI_BRANCH} | jq .commit.sha)"
 else
     export trader_version=${IMAGE_VERSION}
     export analyzer_version=${IMAGE_VERSION}
     export ui_version=${IMAGE_VERSION}
 fi
+
+echo $trader_version $analyzer_version $ui_version
 
 FILENAME="${ABSDIR}/docker-compose.yml"
 docker-compose -f ${FILENAME} down
