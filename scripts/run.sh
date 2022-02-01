@@ -81,9 +81,9 @@ if [[ -z ${IMAGE_VERSION} ]]; then
     TRADER_BRANCH="${TRADER_BRANCH:-main}"
     ANALYZER_BRANCH="${ANALYZER_BRANCH:-main}"
     UI_BRANCH="${UI_BRANCH:-main}"
-    export trader_version="$(curl -s https://api.github.com/repos/silveroak-apps/trader/branches/${TRADER_BRANCH} | jq .commit.sha)"
-    export $analyzer_version="$(curl -s https://api.github.com/repos/silveroak-apps/analyzer/branches/${ANALYZER_BRANCH} | jq .commit.sha)"
-    export ui_version="$(curl -s https://api.github.com/repos/silveroak-apps/cryptobot-ui/branches/${UI_BRANCH} | jq .commit.sha)"
+    export trader_version="$(curl -s https://api.github.com/repos/silveroak-apps/trader/branches/${TRADER_BRANCH} | jq -r .commit.sha)"
+    export $analyzer_version="$(curl -s https://api.github.com/repos/silveroak-apps/analyzer/branches/${ANALYZER_BRANCH} | jq -r .commit.sha)"
+    export ui_version="$(curl -s https://api.github.com/repos/silveroak-apps/cryptobot-ui/branches/${UI_BRANCH} | jq -r .commit.sha)"
 else
     export trader_version=${IMAGE_VERSION}
     export analyzer_version=${IMAGE_VERSION}
